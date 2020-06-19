@@ -20,6 +20,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import java.io.IOException;
 import java.net.URL;
@@ -48,16 +54,10 @@ public class MyViewController implements Initializable,Observer {
     @FXML private Button solveButton;
     @FXML private MenuItem exit;
     @FXML private MenuItem properties;
-    private Main mainApp;
+    private Main main;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            VBox box = FXMLLoader.load(getClass().getResource("DrawerContent.fxml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
         lbl_player_row.textProperty().bind(update_player_position_row);
         lbl_player_column.textProperty().bind(update_player_position_col);
@@ -219,16 +219,23 @@ public class MyViewController implements Initializable,Observer {
     }
 
     public void showProp(ActionEvent event) throws IOException {
-        Parent tableViewParent = FXMLLoader.load(getClass().getResource("propView.fxml"));
-        Scene tableViewScene = new Scene(tableViewParent);
 
 
-        //This line gets the Stage information
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("propView.fxml"));
+        Parent propWindowFXML = loader.load();
 
-        window.setScene(tableViewScene);
-        window.show();
+        //use one of components on your scene to get a reference to your scene object.
+
+        Stage stage = (Stage)textField_mazeRows.getScene().getWindow();//or use any other component in your controller
+        Scene propWindow = new Scene (propWindowFXML, 800, 600);
+
+        stage.setScene(propWindow);
+        stage.show(); //this line may be unnecessary since you are using the same stage.
+
     }
+
+
+
 }
 
 

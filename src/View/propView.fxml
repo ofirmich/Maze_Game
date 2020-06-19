@@ -4,8 +4,8 @@
 <?import javafx.scene.layout.*?>
 
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.propViewController">
+<Pane minHeight="300.0" minWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.propViewController">
    <children>
-      <Button mnemonicParsing="false" text="Button" onAction="#changeScreenButtonPushed" />
+      <Label text="Label" />
    </children>
-</AnchorPane>
+</Pane>
