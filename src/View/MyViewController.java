@@ -1,4 +1,5 @@
 package View;
+import Model.MyModel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,14 +19,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -49,12 +51,15 @@ public class MyViewController implements Initializable,Observer {
     StringProperty update_player_position_col = new SimpleStringProperty();
     private Maze maze;
     private Solution sol;
+    private int counter;
 
     @FXML private Button generateButton;
     @FXML private Button solveButton;
     @FXML private MenuItem exit;
     @FXML private MenuItem properties;
     private Main main;
+    @FXML private Pane pane;
+    @FXML private BorderPane borderPane;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -64,6 +69,10 @@ public class MyViewController implements Initializable,Observer {
 
         generateButton.setDisable(false);
         solveButton.setDisable(true);
+
+        counter = 1;
+        mazeDisplayer.heightProperty().bind(pane.heightProperty());
+        mazeDisplayer.widthProperty().bind(pane.widthProperty());
     }
 
 
@@ -198,13 +207,32 @@ public class MyViewController implements Initializable,Observer {
     }
 
     public void saveMaze(ActionEvent actionEvent) {
-
+        FileChooser projectDirectory = new FileChooser();
+        projectDirectory.setTitle("MazeHistory");
+        File file = new File("./MazeHistory");
+        if (file.exists() == false) {
+            file.mkdir();
+        }
+        projectDirectory.setInitialDirectory(file);
+        projectDirectory.setInitialFileName("maze" + counter);//default name
+        counter++;
+        File file2 = projectDirectory.showSaveDialog(textField_mazeRows.getScene().getWindow());
+        viewModel.saveMaze(file2);
     }
+
 
     public void loadMaze(ActionEvent actionEvent) {
-    }
-
-    public void opt(ActionEvent actionEvent) {
+        FileChooser projectDirectory = new FileChooser();
+        projectDirectory.setTitle("MazeHistory");
+        File file = new File("./MazeHistory");
+        if (file.exists() == false) {
+            file.mkdir();
+        }
+        projectDirectory.setInitialDirectory(file);
+        //projectDirectory.setInitialFileName("maze" + counter);
+        //counter++;
+        File file2 = projectDirectory.showOpenDialog(textField_mazeRows.getScene().getWindow());
+        viewModel.loadMaze(file2);
     }
 
     public void exitProg(ActionEvent actionEvent) {
@@ -215,12 +243,20 @@ public class MyViewController implements Initializable,Observer {
     public void help(ActionEvent actionEvent) {
     }
 
-    public void about() {
+    public void about() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("About.fxml"));
+        Parent propWindowFXML = loader.load();
+
+        //use one of components on your scene to get a reference to your scene object.
+
+        Stage stage = (Stage)textField_mazeRows.getScene().getWindow();//or use any other component in your controller
+        Scene propWindow = new Scene (propWindowFXML, 800, 600);
+
+        stage.setScene(propWindow);
+        stage.show(); //this line may be unnecessary since you are using the same stage.
     }
 
     public void showProp(ActionEvent event) throws IOException {
-
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("propView.fxml"));
         Parent propWindowFXML = loader.load();
 

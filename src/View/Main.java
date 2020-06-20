@@ -1,6 +1,9 @@
 package View;
 
 import Model.MyModel;
+import Server.Server;
+import Server.ServerStrategyGenerateMaze;
+import Server.ServerStrategySolveSearchProblem;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
 
@@ -9,6 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import javafx.stage.Stage;
+
+import java.awt.*;
 
 public class Main extends Application {
 
@@ -19,20 +24,32 @@ public class Main extends Application {
         MyModel model = new MyModel();
         MyViewModel viewModel = new MyViewModel(model);
         model.addObserver(viewModel);
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = gd.getDisplayMode().getWidth();
+        int height = gd.getDisplayMode().getHeight();
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
-        Scene scene = new Scene(root, 600, 500);
+        Scene scene = new Scene(root, width/2, height/2);
 
         MyViewController view = fxmlLoader.getController();
 
         view.setViewModel(viewModel);
         viewModel.addObserver(view);
         primaryStage.setScene(scene);
+        //primaryStage.setResizable(false);
 
         primaryStage.show();
     }
 
     public static void main(String[] args) {
+        Server mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
+        mazeGeneratingServer.start();
+        Server solveSearchProblemServer = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
+        solveSearchProblemServer.start();
+
+
         launch(args);
+        mazeGeneratingServer.stop();
+        solveSearchProblemServer.stop();
     }
 }

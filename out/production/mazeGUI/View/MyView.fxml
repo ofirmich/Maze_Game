@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane onMouseClicked="#mouseClicked" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane fx:id="borderPane" onMouseClicked="#mouseClicked" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController" stylesheets="@style.css">
    <left>
       <VBox prefHeight="200.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
@@ -51,12 +51,12 @@
          <children>
             <MenuBar>
                <menus>
-                  <Menu mnemonicParsing="false" onAction="#opt" text="Options">
+                  <Menu mnemonicParsing="false" text="Options">
                      <items>
                         <MenuItem fx:id="properties" mnemonicParsing="false" onAction="#showProp" text="Properties" />
                      </items>
                   </Menu>
-                  <Menu  mnemonicParsing="false"  text="Exit">
+                  <Menu mnemonicParsing="false" text="Exit">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#exitProg" text="exit" />
                      </items></Menu>
@@ -75,9 +75,9 @@
       </VBox>
    </top>
    <center>
-      <Pane BorderPane.alignment="CENTER">
+      <Pane fx:id="pane" BorderPane.alignment="CENTER">
          <children>
-            <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNamePlayer="C:\Users\ofirm\Pictures\shim.jpg" imageFileNameWall="./src/Resources/Images/wall1.jpg" imageGoalState="C:\Users\ofirm\Pictures\island.jpg" onKeyPressed="#keyPressed" width="400.0" />
+            <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNamePlayer="C:\Users\shayr\Desktop\no.jpg" imageFileNameWall=".\resources\cloud.jpg" imageGoalState="C:\Users\shayr\Desktop\no.jpg" onKeyPressed="#keyPressed" width="400.0" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

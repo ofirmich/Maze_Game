@@ -1,5 +1,6 @@
 package Model;
 //ckage ATP-Project-PartB;
+import java.io.File;
 import java.util.Observer;
 import algorithms.mazeGenerators.*;
 import algorithms.search.*;
@@ -14,4 +15,6 @@ public interface IModel {
     public void assignObserver(Observer o);
     public void solveMaze(Maze maze);
     public Solution getSolution();
+    public void saveMaze(File file);
+    public void loadMaze(File file);
 }

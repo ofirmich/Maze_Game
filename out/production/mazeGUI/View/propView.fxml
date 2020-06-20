@@ -5,14 +5,11 @@
 
 <Pane minHeight="300.0" minWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.propViewController">
    <children>
-      <AnchorPane>
-         <children>
-            <MenuButton mnemonicParsing="false" text="MenuButton">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-                <MenuItem mnemonicParsing="false" text="Action 2" />
-              </items>
-            </MenuButton>
-         </children></AnchorPane>
+      <Label layoutX="172.0" layoutY="33.0" text="properties" textAlignment="CENTER" />
+      <ChoiceBox fx:id="generateChoose" layoutX="124.0" layoutY="125.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="solveChoose" layoutX="124.0" layoutY="215.0" prefWidth="150.0" />
+      <Label layoutX="122.0" layoutY="90.0" text="choose generating algorithm" textAlignment="CENTER" />
+      <Label layoutX="133.0" layoutY="181.0" text="choose solving algorithm" textAlignment="CENTER" />
+      <Button fx:id="submit" layoutX="306.0" layoutY="254.0" mnemonicParsing="false" onAction="#AfterSubmit" text="submit" />
    </children>
 </Pane>
