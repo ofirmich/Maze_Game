@@ -26,6 +26,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import java.io.*;
 
@@ -73,6 +75,7 @@ public class MyViewController implements Initializable,Observer {
         counter = 1;
         mazeDisplayer.heightProperty().bind(pane.heightProperty());
         mazeDisplayer.widthProperty().bind(pane.widthProperty());
+
     }
 
 

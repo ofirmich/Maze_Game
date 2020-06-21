@@ -11,14 +11,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-
 import java.awt.*;
+import java.io.File;
+import java.nio.file.Paths;
 
 public class Main extends Application {
-
-
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         MyModel model = new MyModel();
@@ -36,7 +37,6 @@ public class Main extends Application {
         view.setViewModel(viewModel);
         viewModel.addObserver(view);
         primaryStage.setScene(scene);
-        //primaryStage.setResizable(false);
 
         primaryStage.show();
     }
@@ -52,4 +52,5 @@ public class Main extends Application {
         mazeGeneratingServer.stop();
         solveSearchProblemServer.stop();
     }
+
 }
