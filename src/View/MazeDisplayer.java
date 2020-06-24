@@ -30,11 +30,11 @@ public class MazeDisplayer extends Canvas {
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageGoalState = new SimpleStringProperty();
 
-    //Instantiating Media class
-    Media media = new Media(new File("./resources/ThemeSong.mp3").toURI().toString());
-
-    //Instantiating MediaPlayer class
-    MediaPlayer mediaPlayer = new MediaPlayer(media);
+//    public void ChangeCharacter() {
+//        setImageGoalState(("./resources/john.png"));
+//        setImageFileNamePlayer();
+//
+//    }
 
     public String getImageGoalState() {
         return imageGoalState.get();
@@ -100,12 +100,6 @@ public class MazeDisplayer extends Canvas {
         //this.sol = null;
         row_player= maze.getStartPosition().getRowIndex();
         col_player = maze.getStartPosition().getColumnIndex();
-
-        //by setting this property to true, the audio will be played
-
-        mediaPlayer.setCycleCount(1000);
-        mediaPlayer.setAutoPlay(true);
-        mediaPlayer.play();
 
         draw();
     }
@@ -201,7 +195,7 @@ public class MazeDisplayer extends Canvas {
             //graphicsContext.fillRect(w, h, cellWidth, cellHeight);
             graphicsContext.drawImage(wayImage, w, h, cellWidth, cellHeight);
         }
-        sol = null;
+        //sol = null;
         double h_player = getRow_player() * cellHeight;
         double w_player = getCol_player() * cellWidth;
         Image playerImage = null;
@@ -214,4 +208,10 @@ public class MazeDisplayer extends Canvas {
 
     }
 
+    public void setAllImg(String s,String sol, String goal, String wall, String player) {
+        setImageGoalState(goal);
+        setImageFileNamePlayer(player);
+        setImageFileNameWall(wall);
+        setImageSol(sol);
+    }
 }

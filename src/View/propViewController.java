@@ -1,6 +1,5 @@
 package View;
 
-import Server.Server;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,62 +10,122 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
-import java.util.Observable;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class propViewController implements Initializable {
-    ObservableList<String> generateList = FXCollections.observableArrayList("empty","simple","myMaze");
-    ObservableList<String> solveList = FXCollections.observableArrayList("DFS","BFS","best");
-    @FXML private ChoiceBox generateChoose;
-    @FXML private ChoiceBox solveChoose;
-    @FXML private Button submit;
-    String solVal = "DFS";
-    String genVal = "MyMaze";
+    ObservableList<String> generateList = FXCollections.observableArrayList("easy", "medium", "hard");
+    @FXML
+    private ChoiceBox generateChoose;
+    @FXML
+    private ChoiceBox solveChoose;
+    @FXML
+    private Button submit;
+    @FXML
+    private Label showGenerator;
+    @FXML
+    private Label showSolver;
+    @FXML
+    private Label showThreads;
+
+    @FXML
+    private Pane pane;
+    @FXML
+    private Pane littlePane;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Server.Configurations.confi();
+        updateLable();
         generateChoose.setItems(generateList);
-        generateChoose.setValue("myMaze");
-        solveChoose.setItems(solveList);
-        solveChoose.setValue("DFS");
+        generateChoose.setValue("hard");
+//        littlePane.heightProperty().bind(pane.heightProperty());
+//        littlePane.widthProperty().bind(pane.widthProperty());
+        //submit.prefWidthProperty().bind(pane.widthProperty().divide(2));
+        //submit.setLayoutX(littlePane.widthProperty().doubleValue());
 
     }
 
+    public void updateLable(){
+
+           // try (InputStream input = propViewController.class.getClassLoader().getResourceAsStream("resources/config.properties")) {
+        try(InputStream input = new FileInputStream("resources/config.properties")){
+                Properties prop = new Properties();
+
+                if (input == null) {
+                    System.out.println("Sorry, unable to find config.properties");
+                    return;
+                }
+                //load a properties file from class path, inside static method
+                prop.load(input);
+
+                //get the property value and print it out
+                showGenerator.setText(prop.getProperty("generateAlgo"));
+                showSolver.setText(prop.getProperty("solveAlgo"));
+                showThreads.setText(prop.getProperty("numOfThreads"));
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+
     public void AfterSubmit(ActionEvent actionEvent) {
         String algoGen = generateChoose.getValue().toString();
-        String algoSol = solveChoose.getValue().toString();
         try {
-            OutputStream out = new FileOutputStream("config.properties");
+            FileInputStream in = new FileInputStream("resources/config.properties");
             Properties prop = new Properties();
+            prop.load(in);
+            in.close();
 
-            prop.setProperty("generateAlgo" , algoGen);
-            prop.setProperty("solveAlgo" , algoSol);
-            prop.store(out,null);
+            FileOutputStream out = new FileOutputStream("resources/config.properties");
+
+            if (algoGen == "easy") {
+                prop.setProperty("generateAlgo", "empty");
+            } else if (algoGen == "medium") {
+                prop.setProperty("generateAlgo", "simple");
+            } else {
+                prop.setProperty("generateAlgo", "MyMaze");
+            }
+            prop.store(out, null);
+            showGenerator.setText(prop.getProperty("generateAlgo"));
+            showSolver.setText(prop.getProperty("solveAlgo"));
+            showThreads.setText(prop.getProperty("numOfThreads"));
             out.close();
-
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MyView.fxml"));
-            Parent propWindowFXML = loader.load();
-            Stage stage = (Stage)submit.getScene().getWindow();//or use any other component in your controller
-            Scene propWindow = new Scene (propWindowFXML, 800, 600);
-
-            stage.setScene(propWindow);
-            stage.show(); //this line may be unnecessary since you are using the same stage.
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (IOException e){}
 
 
-        //use one of components on your scene to get a reference to your scene object.
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MyView.fxml"));
+            Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
+            MyViewController viewController=fxmlLoader.getController();
+            if(viewController.jonOrDean == "D"){
+                viewController.mazeDisplayer.setAllImg("D" , "./resources/flame22.png", "./resources/khalisssi2.png" , "./resources/cloudd.png" ,"./resources/dragonDOWN.png");
+            }
+            else{
+                viewController.mazeDisplayer.setAllImg("J","./resources/ice.png" , "./resources/jon.png" , "./resources/wall.jpg" , "./resources/wolf.png");
+            }
+          //  FXMLLoader loader = new FXMLLoader(getClass().getResource("MyView.fxml"));
+         //   Parent propWindowFXML = loader.load();
+            Stage stage = (Stage) submit.getScene().getWindow();//or use any other component in your controller
+            Scene backScene = new Scene(root, 800, 600);
+
+            stage.setScene(backScene);
+            stage.show(); //this line may be unnecessary since you are using the same stage.
 
 
-
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

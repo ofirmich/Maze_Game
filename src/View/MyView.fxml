@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="borderPane" onMouseClicked="#mouseClicked" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController" stylesheets="/View/style.css">
+<BorderPane fx:id="borderPane" onMouseClicked="#mouseClicked" stylesheets="/View/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <left>
       <VBox prefHeight="200.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
@@ -33,6 +33,7 @@
                <Label fx:id="lbl_player_row" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                <Label fx:id="lbl_player_column" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             </GridPane>
+            <Button fx:id="changeCharcter" mnemonicParsing="false" onAction="#changeChar" prefHeight="26.0" prefWidth="180.0" text="change character" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -60,8 +61,16 @@
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#exitProg" text="exit" />
                      </items></Menu>
-                  <Menu mnemonicParsing="false" onAction="#help" text="Help" />
-                  <Menu mnemonicParsing="false" onAction="#about" text="About" />
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#help" text="info" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="About">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="about us" />
+                     </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="File">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#generateMaze" text="New" />
@@ -77,7 +86,7 @@
    <center>
       <Pane fx:id="pane" BorderPane.alignment="CENTER">
          <children>
-            <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNamePlayer=".\resources\dragonDOWN.png" imageFileNameWall=".\resources\cloudd.png" imageGoalState=".\resources\khalisssi2.png" imageSol= ".\resources\flame22.png" onKeyPressed="#keyPressed" width="400.0" />
+            <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNamePlayer="" imageFileNameWall="" imageGoalState="" imageSol="" onKeyPressed="#keyPressed" width="400.0" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

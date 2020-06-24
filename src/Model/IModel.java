@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Observer;
 import algorithms.mazeGenerators.*;
 import algorithms.search.*;
+import javafx.scene.input.KeyCode;
 
 
 public interface IModel {

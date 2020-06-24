@@ -8,6 +8,7 @@ import algorithms.mazeGenerators.*;
 import algorithms.search.*;
 import Client.IClientStrategy;
 import Server.ServerStrategySolveSearchProblem;
+import javafx.scene.input.KeyCode;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -15,11 +16,23 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 public class MyModel extends Observable implements IModel{
+    private static MyModel model;
+
+    public static MyModel getInstance(){
+        if(model == null){
+            model = new MyModel();
+        }
+        return model;
+    }
 
     private Maze maze;
     private int rowChar;
     private int colChar;
     private Solution sol;
+
+
+
+    private boolean win;
 
 
     public MyModel() {
@@ -29,6 +42,14 @@ public class MyModel extends Observable implements IModel{
         sol = null;
 
     }
+
+   /* public boolean isWin() {
+        return win;
+    }
+
+    public void setWin(boolean win) {
+        this.win = win;
+    }*/
 
     public void updateCharacterLocation(int direction)
     {
@@ -46,7 +67,7 @@ public class MyModel extends Observable implements IModel{
 
         switch(direction)
         {
-            case 8: //Up
+            case 8://Up
                 if(rowChar!=0 && maze.getMazeCell(rowChar-1 , colChar) != 1) {
                     rowChar--;
                 }
@@ -94,6 +115,8 @@ public class MyModel extends Observable implements IModel{
                 break;
 
         }
+      //  if (rowChar == maze.getGoalPosition().getRowIndex() && colChar == maze.getGoalPosition().getColumnIndex()){ win = true; }
+
 
         setChanged();
         notifyObservers();
@@ -139,6 +162,7 @@ public class MyModel extends Observable implements IModel{
      //   solveSearchProblemServer.stop();
         setChanged();
         notifyObservers();
+        //sol = null;///////////////////////////////////addddd
     }
 
     @Override
@@ -171,6 +195,7 @@ public class MyModel extends Observable implements IModel{
                         byte[] decompressedMaze = new byte[(mazeDimensions[0]*mazeDimensions[1])+13 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
                         is.read(decompressedMaze); //Fill decompressedMaze with bytes
                         maze = new Maze(decompressedMaze);
+                        sol = null;/////////////////////
                         rowChar = maze.getStartPosition().getRowIndex();
                         colChar = maze.getStartPosition().getColumnIndex();
                     } catch (Exception e) {
