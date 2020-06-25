@@ -1,5 +1,5 @@
 package View;
-import Model.MyModel;
+import algorithms.mazeGenerators.Position;
 import javafx.beans.binding.Bindings;
 import javafx.scene.image.Image;
 import javafx.event.EventHandler;
@@ -22,9 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -44,6 +42,7 @@ import java.util.List;
 public class MyViewController implements Initializable,Observer {
     //  private MyViewModel viewModel;
     protected MyViewModel viewModel = MyViewModel.getInstance();
+    public static int isOpen;
     //Scene scene = Main.getInstance();
     //Stage stage = Main.getInstance2();
     @FXML
@@ -62,16 +61,18 @@ public class MyViewController implements Initializable,Observer {
     StringProperty update_player_position_col = new SimpleStringProperty();
     private Maze maze;
     private Solution sol;
+    private Position start;
+    private Position goal;
     private int counter;
-
     //Instantiating Media class
     Media media = new Media(new File("./resources/ThemeSong.mp3").toURI().toString());
     Media media2 = new Media(new File("./resources/win.mp3").toURI().toString());
-
-
     //Instantiating MediaPlayer class
-    MediaPlayer mediaPlayer = new MediaPlayer(media);
+    public static MediaPlayer mediaPlayer;// = new MediaPlayer(media);
     MediaPlayer m = new MediaPlayer(media2);
+    //protected static boolean winOpen=false;
+    protected static boolean propHappend=false;
+
 
     @FXML
     private Button generateButton;
@@ -82,7 +83,8 @@ public class MyViewController implements Initializable,Observer {
     private Pane pane;
     @FXML
     private BorderPane borderPane;
-    private static boolean isStopped;
+    protected static boolean themeMusicOn;
+
 
     public MyViewModel getView() {
         return this.viewModel;
@@ -90,12 +92,13 @@ public class MyViewController implements Initializable,Observer {
     protected static String jonOrDean;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         lbl_player_row.textProperty().bind(update_player_position_row);
         lbl_player_column.textProperty().bind(update_player_position_col);
         this.scroll(borderPane);
         generateButton.setDisable(false);
         solveButton.setDisable(true);
-        isStopped = true;
+    //    isStopped = true;
         counter = 1;
         //mazeDisplayer.heightProperty().bind(pane.heightProperty());
         //mazeDisplayer.widthProperty().bind(pane.widthProperty());
@@ -136,12 +139,25 @@ public class MyViewController implements Initializable,Observer {
 
 
     public void generateMaze() {
-        if (isStopped == true) {
+        if(themeMusicOn == false)
+        {
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setVolume(0.3);
             mediaPlayer.setCycleCount(1000);
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.play();
-            isStopped = false;
+            themeMusicOn = true;
         }
+        if(mediaPlayer!=null && mediaPlayer.isMute()){
+            mediaPlayer.setMute(false);
+            mediaPlayer.play();
+            themeMusicOn = true;
+        }
+
+
+
+            // if (isStopped == true) {
+
 
         viewModel.addObserver(this);
         int rows = Integer.valueOf(textField_mazeRows.getText());
@@ -152,7 +168,6 @@ public class MyViewController implements Initializable,Observer {
         }
 
     }
-
     public void solveMaze() {
         viewModel.solveMaze(this.maze);
     }
@@ -161,16 +176,13 @@ public class MyViewController implements Initializable,Observer {
     public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
-        ;
         alert.show();
     }
 
 
     public void keyPressed(KeyEvent keyEvent) {
-
         viewModel.moveCharacter(keyEvent);
         keyEvent.consume();
-
     }
 
     public void mouseClicked(MouseEvent mouseEvent) {
@@ -184,12 +196,17 @@ public class MyViewController implements Initializable,Observer {
             if (maze == null)//generateMaze
             {
                 this.maze = viewModel.getMaze();
+                this.start= viewModel.getStart();
+                this.goal= viewModel.getGoal();
+               // this.mazeDisplayer.set_player_position(start.getRowIndex(), start.getColumnIndex());
+
                 drawMaze();
             } else {
                 Maze maze = viewModel.getMaze();
 
                 if (maze == this.maze)//Not generateMaze
                 {
+
                     int rowChar = mazeDisplayer.getRow_player();
                     int colChar = mazeDisplayer.getCol_player();
                     int rowFromViewModel = viewModel.getRowChar();
@@ -199,10 +216,50 @@ public class MyViewController implements Initializable,Observer {
                     set_update_player_position_row(rowFromViewModel + "");
                     set_update_player_position_col(colFromViewModel + "");
                     this.mazeDisplayer.set_player_position(rowFromViewModel, colFromViewModel);
-                    if (rowFromViewModel == maze.getGoalPosition().getRowIndex() && colFromViewModel == maze.getGoalPosition().getColumnIndex())//Solve Maze
+                    if (rowFromViewModel == maze.getGoalPosition().getRowIndex() && colFromViewModel == maze.getGoalPosition().getColumnIndex() &&isOpen==0 /*&& winOpen ==false*/)//Solve Maze
                     {
-                        win();
-                        //playAgain();
+                        if(mediaPlayer != null) {
+                            mediaPlayer.setMute(true);
+                        }
+                        //  isStopped = true;
+                        m.setAutoPlay(true);
+                        m.setVolume(0.4);
+                        m.play();
+                        Stage stage = new Stage();
+                        stage.setTitle("winner");
+                        Pane board = new Pane();
+                        if(jonOrDean == "D" && isOpen==0) {
+                            Image img = new Image("/Images/dragonWin.gif");
+                            ImageView image = new ImageView(img);
+                            board.getChildren().add(image);
+                            isOpen=1;
+                            Scene scene = new Scene(board, 220, 123);
+                            stage.setScene(scene);
+                            stage.show();
+                        }
+                        else if(isOpen==0){
+                            Image img = new Image("/Images/wolfWin.gif");
+                            ImageView image = new ImageView(img);
+                            board.getChildren().add(image);
+                            isOpen=1;
+                            Scene scene = new Scene(board, 220, 123);
+                            stage.setScene(scene);
+                            stage.show();
+
+                        }
+
+
+                        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                            public void handle(WindowEvent we) {
+
+                                themeMusicOn = false;
+                                m.pause();
+                                mediaPlayer.setMute(true);
+                                mediaPlayer.pause();
+                                isOpen=0;
+                                stage.close();
+                            }
+                        });
                     }
 
                     if (viewModel.getSol() != null) {
@@ -219,45 +276,6 @@ public class MyViewController implements Initializable,Observer {
         }
     }
 
-    public void win() {
-
-        //Instantiating MediaPlayer class
-        //mediaPlayer.setCycleCount(1000);
-        Stage stage = new Stage();
-        stage.setTitle("winner");
-        Pane board = new Pane();
-        if(jonOrDean == "D") {
-            Image img = new Image("/dragonWin.gif");
-            ImageView image = new ImageView(img);
-            board.getChildren().add(image);
-
-        }
-        else{
-            Image img = new Image("/wolfWin.gif");
-            ImageView image = new ImageView(img);
-            board.getChildren().add(image);
-        }
-        if(isStopped == false) {
-            this.mediaPlayer.pause();
-            isStopped = true;
-            m.setAutoPlay(true);
-            m.play();
-        }
-
-       // board.getChildren().add(image);
-        Scene scene = new Scene(board, 300, 300);
-     //   scene.getStylesheets().addAll(this.getClass().getResource("win.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
-
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                playAgain();
-                stage.close();
-                System.out.println("Stage is closing");
-            }
-        });
-    }
 
     private void scroll(Pane pane) {
         //handles mouse scrolling
@@ -276,15 +294,6 @@ public class MyViewController implements Initializable,Observer {
             }
         });
 
-    }
-
-    public void playAgain() {
-        m.pause();
-        if(isStopped = true) {
-            mediaPlayer.play();
-            isStopped = false;
-        }
-//        }
     }
 
     private void adjustDisplaySize() {
@@ -314,7 +323,7 @@ public class MyViewController implements Initializable,Observer {
     }
 
     public void drawMaze() {
-        mazeDisplayer.drawMaze(maze);
+        mazeDisplayer.drawMaze(maze , start , goal);
     }
 
     public void drawSol() {
@@ -406,12 +415,8 @@ public class MyViewController implements Initializable,Observer {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MyViewProp.fxml"));
         Parent propWindowFXML = loader.load();
-
-        //use one of components on your scene to get a reference to your scene object.
-
         Stage stage = (Stage) textField_mazeRows.getScene().getWindow();//or use any other component in your controller
         Scene propWindow = new Scene(propWindowFXML, 800, 600);
-
         stage.setScene(propWindow);
         stage.show(); //this line may be unnecessary since you are using the same stage.
 
@@ -421,39 +426,37 @@ public class MyViewController implements Initializable,Observer {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
+        GridPane gridPane = new GridPane();
+
+//        gridPane.setGridLinesVisible(true);
+        final int numCols = 50 ;
+        final int numRows = 50 ;
+        for (int i = 0; i < numCols; i++) {
+            ColumnConstraints colConst = new ColumnConstraints();
+            colConst.setPercentWidth(100.0 / numCols);
+            gridPane.getColumnConstraints().add(colConst);
+        }
+        for (int i = 0; i < numRows; i++) {
+            RowConstraints rowConst = new RowConstraints();
+            rowConst.setPercentHeight(100.0 / numRows);
+            gridPane.getRowConstraints().add(rowConst);
+        }
+
+
         List<Button> bList= new ArrayList<Button>();
         stage.setTitle("Welcome");
-        Pane board = new Pane();
+//        Pane board = new Pane();
         Button jon = new Button();
         Button deanr = new Button();
-        board.getChildren().addAll(jon , deanr);
-        jon.setLayoutX(200);
-        jon.setLayoutY(500);
-        deanr.setLayoutX(600);
-        deanr.setLayoutY(500);
+        gridPane.add(jon, 13, 37, 10, 10);
+        gridPane.add(deanr, 32, 37, 10, 10);
+
         jon.setText("Jon Snow");
         deanr.setText("Daenerys Targaryen");
-        Scene scene = new Scene(board, width/2, height/2);
+        Scene scene = new Scene(gridPane, width/2, height/2);
         scene.getStylesheets().addAll(this.getClass().getResource("opening.css").toExternalForm());
 
         stage.setScene(scene);
-        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            //jon.setLayoutX(newVal.doubleValue()-185);
-            //deanr.setLayoutX(newVal.doubleValue());
-            jon.setLayoutX((newVal.doubleValue()/4)-55);
-            deanr.setLayoutX((newVal.doubleValue()/2)+75);
-
-        });
-
-        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            //jon.setLayoutX(newVal.doubleValue()-185);
-            //deanr.setLayoutX(newVal.doubleValue());
-            jon.setLayoutY((newVal.doubleValue()/2)+220);
-            deanr.setLayoutY((newVal.doubleValue()/2)+220);
-
-        });
-        jon.prefWidthProperty().bind(Bindings.divide(stage.widthProperty(),5));
-        jon.prefHeightProperty().bind(Bindings.divide(stage.heightProperty(),25));
         bList.add(jon);
         bList.add(deanr);
         stage.show();
@@ -469,17 +472,16 @@ public class MyViewController implements Initializable,Observer {
         jon.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mazeDisplayer.setAllImg("J","./resources/ice.png" , "./resources/jon.png" , "./resources/wall.jpg" , "./resources/wolf.png");
+                mazeDisplayer.setAllImg("J","./resources/Images/ice.png" , "./resources/Images/jon.png" , "./resources/Images/wall.jpg" , "./resources/Images/wolf.png");
                 jonOrDean = "J";
                 stage.close();
             }
         });
 
-
         deanr.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mazeDisplayer.setAllImg("D" , "./resources/flame22.png", "./resources/khalisssi2.png" , "./resources/cloudd.png" ,"./resources/dragonDOWN.png");
+                mazeDisplayer.setAllImg("D" , "./resources/Images/flame22.png", "./resources/Images/khalisssi2.png" , "./resources/Images/cloudd.png" ,"./resources/Images/dragonDOWN.png");
                 jonOrDean = "D";
                 stage.close();
             }

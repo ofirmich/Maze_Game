@@ -29,28 +29,26 @@ public class MyModel extends Observable implements IModel{
     private int rowChar;
     private int colChar;
     private Solution sol;
-
+    private Position start;
+    private Position goal;
 
 
     private boolean win;
 
 
     public MyModel() {
-        maze = null;
-        rowChar= 2;
-        colChar = 2;
-        sol = null;
 
     }
 
-   /* public boolean isWin() {
-        return win;
+
+
+    public Position getStart() {
+        return start;
     }
 
-    public void setWin(boolean win) {
-        this.win = win;
-    }*/
-
+    public Position getGoal() {
+        return goal;
+    }
     public void updateCharacterLocation(int direction)
     {
         /*
@@ -192,10 +190,12 @@ public class MyModel extends Observable implements IModel{
                         toServer.flush();
                         byte[] compressedMaze = (byte[]) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        byte[] decompressedMaze = new byte[(mazeDimensions[0]*mazeDimensions[1])+13 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
+                        byte[] decompressedMaze = new byte[(mazeDimensions[0]*mazeDimensions[1])+12 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
                         is.read(decompressedMaze); //Fill decompressedMaze with bytes
                         maze = new Maze(decompressedMaze);
                         sol = null;/////////////////////
+                        start = maze.getStartPosition();
+                        goal = maze.getGoalPosition();
                         rowChar = maze.getStartPosition().getRowIndex();
                         colChar = maze.getStartPosition().getColumnIndex();
                     } catch (Exception e) {

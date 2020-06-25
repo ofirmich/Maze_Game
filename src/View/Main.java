@@ -48,7 +48,7 @@ public class Main extends Application {
         jon.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                viewController.mazeDisplayer.setAllImg("J","./resources/ice.png" , "./resources/jon.png" , "./resources/wall.jpg" , "./resources/wolf.png");
+                viewController.mazeDisplayer.setAllImg("J","./resources/Images/ice.png" , "./resources/Images/jon.png" , "./resources/Images/wall.jpg" , "./resources/Images/wolf.png");
                 Scene scene2 = new Scene(root, width/2, height/2);
                 viewController.jonOrDean = "J";
                 primaryStage.setScene(scene2);
@@ -60,7 +60,7 @@ public class Main extends Application {
         deanr.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                viewController.mazeDisplayer.setAllImg("D" , "./resources/flame22.png", "./resources/khalisssi2.png" , "./resources/cloudd.png" ,"./resources/dragonDOWN.png");
+                viewController.mazeDisplayer.setAllImg("D" , "./resources/Images/flame22.png", "./resources/Images/khalisssi2.png" , "./resources/Images/cloudd.png" ,"./resources/Images/dragonDOWN.png");
                 viewController.jonOrDean = "D";
                 Scene scene2 = new Scene(root, width/2, height/2);
                 primaryStage.setScene(scene2);

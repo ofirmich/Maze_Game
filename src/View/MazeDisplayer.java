@@ -1,6 +1,7 @@
 package View;
 
 import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
 import algorithms.search.MazeState;
 import algorithms.search.Solution;
@@ -24,6 +25,8 @@ public class MazeDisplayer extends Canvas {
     private Solution sol;
     private int row_player;
     private int col_player;
+    private Position start;
+    private Position goal;
 
     StringProperty imageSol = new SimpleStringProperty();
     StringProperty imageFileNameWall = new SimpleStringProperty();
@@ -94,10 +97,14 @@ public class MazeDisplayer extends Canvas {
 
 
 
-    public void drawMaze(Maze maze)
+    public void drawMaze(Maze maze , Position start, Position goal)
     {
         this.maze = maze;
         //this.sol = null;
+        this.start = start;
+        this.goal = goal;
+   /*     row_player= start.getRowIndex();
+        col_player = start.getColumnIndex();*/
         row_player= maze.getStartPosition().getRowIndex();
         col_player = maze.getStartPosition().getColumnIndex();
 

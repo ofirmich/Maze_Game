@@ -3,6 +3,7 @@ package ViewModel;
 import Model.IModel;
 import Model.MyModel;
 import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -23,7 +24,8 @@ public class MyViewModel extends Observable implements Observer {
     }
     private  MyViewModel() {model= MyModel.getInstance();}
 
-
+    private Position start;
+    private Position goal;
     private Maze maze;
     private int rowChar;
     private int colChar;
@@ -36,6 +38,14 @@ public class MyViewModel extends Observable implements Observer {
         this.maze = null;
         this.sol = null;
     }*/
+
+    public Position getStart() {
+        return start;
+    }
+
+    public Position getGoal() {
+        return goal;
+    }
 
     public Solution getSol() {
         return sol;
@@ -60,6 +70,8 @@ public class MyViewModel extends Observable implements Observer {
             if(maze == null)//generateMaze
             {
                 this.maze = model.getMaze();
+                this.start= model.getStart();
+                this.goal= model.getGoal();
             }
             else {
                 Maze maze = model.getMaze();
@@ -75,16 +87,13 @@ public class MyViewModel extends Observable implements Observer {
                     }
                         this.rowChar = rowChar;
                         this.colChar = colChar;
-
-
                 }
                 else//GenerateMaze
                 {
                     this.maze = maze;
-                    this.sol = null;////////////////////
+                    this.sol = null;
                 }
             }
-
             setChanged();
             notifyObservers();
         }

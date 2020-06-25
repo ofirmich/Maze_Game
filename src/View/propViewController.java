@@ -1,5 +1,6 @@
 package View;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -38,6 +39,8 @@ public class propViewController implements Initializable {
     private Pane pane;
     @FXML
     private Pane littlePane;
+
+   // private boolean themeMusicOn = MyViewController.themeMusicOn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -109,10 +112,10 @@ public class propViewController implements Initializable {
             Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
             MyViewController viewController=fxmlLoader.getController();
             if(viewController.jonOrDean == "D"){
-                viewController.mazeDisplayer.setAllImg("D" , "./resources/flame22.png", "./resources/khalisssi2.png" , "./resources/cloudd.png" ,"./resources/dragonDOWN.png");
+                viewController.mazeDisplayer.setAllImg("D" , "./resources/Images/flame22.png", "./resources/Images/khalisssi2.png" , "./resources/Images/cloudd.png" ,"./resources/Images/dragonDOWN.png");
             }
             else{
-                viewController.mazeDisplayer.setAllImg("J","./resources/ice.png" , "./resources/jon.png" , "./resources/wall.jpg" , "./resources/wolf.png");
+                viewController.mazeDisplayer.setAllImg("J","./resources/Images/ice.png" , "./resources/Images/jon.png" , "./resources/Images/wall.jpg" , "./resources/Images/wolf.png");
             }
           //  FXMLLoader loader = new FXMLLoader(getClass().getResource("MyView.fxml"));
          //   Parent propWindowFXML = loader.load();
@@ -120,7 +123,11 @@ public class propViewController implements Initializable {
             Scene backScene = new Scene(root, 800, 600);
 
             stage.setScene(backScene);
+
+            MyViewController.themeMusicOn = true;
+            //MyViewController.winOpen = false;
             stage.show(); //this line may be unnecessary since you are using the same stage.
+
 
 
         }
